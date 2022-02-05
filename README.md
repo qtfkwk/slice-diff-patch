@@ -14,11 +14,18 @@ See also:
 * Department of Mathematics and Computer Science. University of Southern Denmark
   (January 12, 2017). "The Hunt-Szymanski Algorithm for LCS"
   <https://imada.sdu.dk/~rolf/Edu/DM823/E16/HuntSzymanski.pdf>
+* [diff crate](https://crates.io/crates/diff)
 * [lcs-diff crate](https://crates.io/crates/lcs-diff)
 * [wu-diff crate](https://crates.io/crates/wu-diff)
 * [Wikipedia: Hunt–Szymanski algorithm](https://en.wikipedia.org/wiki/Hunt%E2%80%93Szymanski_algorithm)
 * [Wikipedia: Bitap algorithm](https://en.wikipedia.org/wiki/Bitap_algorithm)
 * [Practical use case analysis](https://github.com/bokuweb/wu-diff-rs/issues/7)
+
+Changelog:
+
+* 0.1.0: initial
+* 0.2.0: add support for [diff crate](https://crates.io/crates/diff)
+* 0.2.1: fix readme
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`diff_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
