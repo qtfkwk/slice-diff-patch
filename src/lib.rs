@@ -1,6 +1,6 @@
 //! This crate provides the [`Change`] enum as an abstraction for [`diff::Result`],
-//! [`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`]; the [`diff_changes()`], [`diff_diff`()],
-//! [`lcs_changes()`], [`lcs_diff`()], [`wu_changes`()], and [`wu_diff`()] functions to calculate or
+//! [`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`]; the [`diff_changes()`], [`diff_diff()`],
+//! [`lcs_changes()`], [`lcs_diff()`], [`wu_changes()`], and [`wu_diff()`] functions to calculate or
 //! process diffs between `a` and `b` slices via LCS (Longest Common Subsequence) or Wu diff
 //! algorithms into a [`Vec<Change>`], and the [`patch()`] function to reproduce `b` from the `a`
 //! slice and [`Vec<Change>`].
