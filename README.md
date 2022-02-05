@@ -1,8 +1,9 @@
-This crate provides the [`Change`] enum as an abstraction for [`lcs_diff::DiffResult`] and
-[`wu_diff::DiffResult`]; the [`lcs_changes()`], [`lcs_diff`()], [`wu_changes`()], and
-[`wu_diff`()] functions to calculate or process diffs between `a` and `b` slices via LCS
-(Longest Common Subsequence) or Wu diff algorithms into a [`Vec<Change>`], and the [`patch()`]
-function to reproduce `b` from the `a` slice and [`Vec<Change>`].
+This crate provides the [`Change`] enum as an abstraction for [`diff::Result`],
+[`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`]; the [`diff_changes()`], [`diff_diff()`],
+[`lcs_changes()`], [`lcs_diff`()], [`wu_changes`()], and [`wu_diff`()] functions to calculate or
+process diffs between `a` and `b` slices via LCS (Longest Common Subsequence) or Wu diff algorithms
+into a [`Vec<Change>`], and the [`patch()`] function to reproduce `b` from the `a` slice and
+[`Vec<Change>`].
 
 See also:
 
@@ -20,10 +21,15 @@ See also:
 * [Practical use case analysis](https://github.com/bokuweb/wu-diff-rs/issues/7)
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
-[`lcs_changes`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
+[`diff_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
+[`diff::Result`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+[`diff_diff()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_diff.html
+[`lcs_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
 [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
-[`lcs_diff`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_diff.html
-[`wu_changes`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.wu_changes.html
+[`lcs_diff()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_diff.html
+[`patch()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.patch.html
+[`Vec<Change>`]: https://doc.rust-lang.org/1.58.1/alloc/vec/struct.Vec.html
+[`wu_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.wu_changes.html
 [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
-[`wu_diff`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.wu_diff.html
+[`wu_diff()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.wu_diff.html
 

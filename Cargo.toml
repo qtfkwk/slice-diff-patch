@@ -1,7 +1,7 @@
 [package]
 name = "slice-diff-patch"
 description = "Library crate providing utility functions for diff and patch of slices"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 edition = "2021"
 documentation = "https://docs.rs/slice-diff-patch/latest/slice_diff_patch"
@@ -9,5 +9,6 @@ homepage = "https://github.com/qtfkwk/slice-diff-patch"
 repository = "https://github.com/qtfkwk/slice-diff-patch"
 
 [dependencies]
+diff = "0.1.12"
 lcs-diff = "0.1.1"
 wu-diff = "0.1.2"
