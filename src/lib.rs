@@ -184,7 +184,7 @@ use std::fmt::Debug;
 /// [`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
 /// [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
 /// [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Change<T: PartialEq + Clone + Debug> {
     Remove(usize),
     Insert((usize, T)),

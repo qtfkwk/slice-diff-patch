@@ -27,6 +27,7 @@ Changelog:
 * 0.2.0: add support for [diff crate](https://crates.io/crates/diff)
 * 0.2.1: fix readme
 * 0.2.2: fix readme
+* 0.3.0: derive `Clone` on [`Change`]
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`diff_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
