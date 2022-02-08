@@ -5,6 +5,46 @@
 //! algorithms into a [`Vec<Change>`], and the [`patch()`] function to reproduce `b` from the `a`
 //! slice and [`Vec<Change>`].
 //!
+//! ```
+//! use slice_diff_patch::*;
+//!
+//! let a = vec!["one", "TWO", "three", "four"];
+//! let b = vec!["zero", "one", "two", "four"];
+//!
+//! let diff = diff_diff(&a, &b);
+//! assert_eq!(
+//!     diff,
+//!     vec![
+//!         Change::Insert((0, "zero")),
+//!         Change::Remove(2),
+//!         Change::Update((2, "two")),
+//!     ],
+//! );
+//! assert_eq!(patch(&a, &diff), b);
+//!
+//! let lcs = lcs_diff(&a, &b);
+//! assert_eq!(
+//!     lcs,
+//!     vec![
+//!         Change::Insert((0, "zero")),
+//!         Change::Update((2, "two")),
+//!         Change::Remove(3),
+//!     ],
+//! );
+//! assert_eq!(patch(&a, &lcs), b);
+//!
+//! let wu = wu_diff(&a, &b);
+//! assert_eq!(
+//!     wu,
+//!     vec![
+//!         Change::Insert((0, "zero")),
+//!         Change::Remove(2),
+//!         Change::Update((2, "two")),
+//!     ],
+//! );
+//! assert_eq!(patch(&a, &wu), b);
+//! ```
+//!
 //! See also:
 //!
 //! * Hunt, James W; Szymanski, Thomas G. (1977). "A fast algorithm for computing longest common
