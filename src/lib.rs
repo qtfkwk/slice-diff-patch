@@ -27,9 +27,9 @@
 
 #[cfg(test)]
 mod tests {
-    use super::Debug;
+    use super::*;
 
-    fn display<T: PartialEq + Clone + Debug>(a: &[T], b: &[T], d: &[super::Change<T>]) {
+    fn display<T: PartialEq + Clone + Debug>(a: &[T], b: &[T], d: &[Change<T>]) {
         println!("a = {:?}", a);
         println!("b = {:?}", b);
         for i in d {
@@ -39,14 +39,14 @@ mod tests {
 
     fn test_states<T: PartialEq + Clone + Debug>(
         states: &[&[T]],
-        diff: &dyn Fn(&[T], &[T]) -> Vec<super::Change<T>>,
+        diff: &dyn Fn(&[T], &[T]) -> Vec<Change<T>>,
     ) {
         for i in 0..states.len() - 1 {
             let a = &states[i];
             let b = &states[i + 1];
             let d = diff(&a, &b);
             display(&a, &b, &d);
-            let c = super::patch(&a, &d);
+            let c = patch(&a, &d);
             assert_eq!(&c, b);
         }
     }
@@ -68,7 +68,7 @@ mod tests {
                 &[2, 5],
                 &[],
             ],
-            &super::diff_diff,
+            &diff_diff,
         );
     }
 
@@ -88,7 +88,7 @@ mod tests {
                 &["pre-bravo"],
                 &[],
             ],
-            &super::diff_diff,
+            &diff_diff,
         );
     }
 
@@ -109,7 +109,7 @@ mod tests {
                 &[2, 5],
                 &[],
             ],
-            &super::lcs_diff,
+            &lcs_diff,
         );
     }
 
@@ -129,7 +129,7 @@ mod tests {
                 &["pre-bravo"],
                 &[],
             ],
-            &super::lcs_diff,
+            &lcs_diff,
         );
     }
 
@@ -150,7 +150,7 @@ mod tests {
                 &[2, 5],
                 &[],
             ],
-            &super::wu_diff,
+            &wu_diff,
         );
     }
 
@@ -170,12 +170,113 @@ mod tests {
                 &["pre-bravo"],
                 &[],
             ],
-            &super::wu_diff,
+            &wu_diff,
+        );
+    }
+
+    fn update<T: PartialEq + Clone + Debug>(
+        a: &[T],
+        b: &[T],
+        changes: Vec<Change<T>>,
+        diff: &dyn Fn(&[T], &[T]) -> Vec<Change<T>>,
+    ) {
+        assert_eq!(diff(&a, &b), changes);
+    }
+
+    #[test]
+    fn diff_update() {
+        update(&[1], &[2], vec![Change::Update((0, 2))], &diff_diff);
+        update(&[1, 2], &[1, 3], vec![Change::Update((1, 3))], &diff_diff);
+        update(&[1, 2, 3], &[1, 2, 4], vec![Change::Update((2, 4))], &diff_diff);
+        update(&["alpha"], &["bravo"], vec![Change::Update((0, "bravo"))], &diff_diff);
+        update(
+            &["alpha", "bravo"],
+            &["alpha", "charlie"],
+            vec![Change::Update((1, "charlie"))],
+            &diff_diff,
+        );
+        update(
+            &["alpha", "bravo", "charlie"],
+            &["alpha", "bravo", "delta"],
+            vec![Change::Update((2, "delta"))],
+            &diff_diff,
+        );
+    }
+
+    #[test]
+    fn lcs_update() {
+        update(&[1], &[2], vec![Change::Update((0, 2))], &lcs_diff);
+        update(&[1, 2], &[1, 3], vec![Change::Update((1, 3))], &lcs_diff);
+        update(&[1, 2, 3], &[1, 2, 4], vec![Change::Update((2, 4))], &lcs_diff);
+        update(&["alpha"], &["bravo"], vec![Change::Update((0, "bravo"))], &lcs_diff);
+        update(
+            &["alpha", "bravo"],
+            &["alpha", "charlie"],
+            vec![Change::Update((1, "charlie"))],
+            &lcs_diff,
+        );
+        update(
+            &["alpha", "bravo", "charlie"],
+            &["alpha", "bravo", "delta"],
+            vec![Change::Update((2, "delta"))],
+            &lcs_diff,
+        );
+    }
+
+    #[test]
+    fn wu_update() {
+        update(&[1], &[2], vec![Change::Update((0, 2))], &wu_diff);
+        update(&[1, 2], &[1, 3], vec![Change::Update((1, 3))], &wu_diff);
+        update(&[1, 2, 3], &[1, 2, 4], vec![Change::Update((2, 4))], &wu_diff);
+        update(&["alpha"], &["bravo"], vec![Change::Update((0, "bravo"))], &wu_diff);
+        update(
+            &["alpha", "bravo"],
+            &["alpha", "charlie"],
+            vec![Change::Update((1, "charlie"))],
+            &wu_diff,
+        );
+        update(
+            &["alpha", "bravo", "charlie"],
+            &["alpha", "bravo", "delta"],
+            vec![Change::Update((2, "delta"))],
+            &wu_diff,
         );
     }
 }
 
 use std::fmt::Debug;
+
+/// Process an insert.
+///
+/// * Upgrade `Change::Remove(n), Change::Insert((n, item))` to `Change::Update((n, item))`.
+fn insert<T: PartialEq + Clone + Debug>(n: usize, item: &T, changes: &mut Vec<Change<T>>) {
+    if let Some(prev_change) = changes.pop() {
+        if let Change::Remove(prev_n) = prev_change {
+            if n == prev_n {
+                changes.push(Change::Update((n, (*item).clone())));
+                return;
+            }
+        }
+        changes.push(prev_change);
+    }
+    changes.push(Change::Insert((n, (*item).clone())));
+}
+
+/// Process a remove.
+///
+/// * Upgrade `Change::Insert((n, item)), Change::Remove(n+1)` to `Change::Update((n, item))`.
+fn remove<T: PartialEq + Clone + Debug>(n: usize, changes: &mut Vec<Change<T>>) {
+    if let Some(prev_change) = changes.pop() {
+        if let Change::Insert((prev_n, ref item)) = prev_change {
+            if n == prev_n + 1 {
+                changes.push(Change::Update((prev_n, item.clone())));
+                return;
+            }
+        }
+        changes.push(prev_change);
+    }
+    changes.push(Change::Remove(n));
+}
 
 /// Abstraction for [`diff::Result`], [`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`] that
 /// excludes a variant for common sequence, stores a clone of inserted items, and indices relate
@@ -184,10 +285,11 @@ use std::fmt::Debug;
 /// [`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
 /// [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
 /// [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Change<T: PartialEq + Clone + Debug> {
     Remove(usize),
     Insert((usize, T)),
+    Update((usize, T)),
 }
 
 /// Convert a slice of [`diff::Result`] into a [`Vec<Change>`].
@@ -200,15 +302,14 @@ pub fn diff_changes<T: PartialEq + Clone + Debug>(d: &[diff::Result<&T>]) -> Vec
     let mut changes = vec![];
     let mut removed = 0;
     for (i, j) in d.iter().enumerate() {
+        let n = i - removed;
         match j {
             diff::Result::Left(_) => {
-                let n = i - removed;
-                changes.push(Change::Remove(n));
+                remove(n, &mut changes);
                 removed += 1;
             }
             diff::Result::Right(r) => {
-                let n = i - removed;
-                changes.push(Change::Insert((n, (*r).clone())));
+                insert(n, *r, &mut changes);
             }
             _ => {}
         }
@@ -237,12 +338,12 @@ pub fn lcs_changes<T: PartialEq + Clone + Debug>(d: &[lcs_diff::DiffResult<T>]) 
         match i {
             lcs_diff::DiffResult::Removed(r) => {
                 let n = r.old_index.unwrap() + added - removed;
-                changes.push(Change::Remove(n));
+                remove(n, &mut changes);
                 removed += 1;
             }
             lcs_diff::DiffResult::Added(r) => {
                 let n = r.new_index.unwrap();
-                changes.push(Change::Insert((n, r.data.clone())));
+                insert(n, &r.data, &mut changes);
                 added += 1;
             }
             _ => {}
@@ -275,12 +376,12 @@ pub fn wu_changes<T: PartialEq + Clone + Debug>(
         match i {
             wu_diff::DiffResult::Removed(r) => {
                 let n = r.old_index.unwrap() + added - removed;
-                changes.push(Change::Remove(n));
+                remove(n, &mut changes);
                 removed += 1;
             }
             wu_diff::DiffResult::Added(r) => {
                 let n = r.new_index.unwrap();
-                changes.push(Change::Insert((n, b[n].clone())));
+                insert(n, &b[n], &mut changes);
                 added += 1;
             }
             _ => {}
@@ -305,6 +406,10 @@ pub fn patch<T: PartialEq + Clone + Debug>(a: &[T], changes: &[Change<T>]) -> Ve
                 a.remove(*n);
             }
             Change::Insert((n, item)) => {
+                a.insert(*n, item.clone());
+            }
+            Change::Update((n, item)) => {
+                a.remove(*n);
                 a.insert(*n, item.clone());
             }
         }
