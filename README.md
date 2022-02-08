@@ -70,10 +70,11 @@ Changelog:
 * 0.3.0: derive `Clone` on [`Change`]
 * 1.0.0: add `Update` variant on [`Change`]
 * 1.1.0: add doc test example
+* 1.1.1: fix readme
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`diff_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
-[`diff::Result`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+[`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
 [`diff_diff()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_diff.html
 [`lcs_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
 [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
