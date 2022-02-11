@@ -3,7 +3,8 @@
 //! [`lcs_changes()`], [`lcs_diff()`], [`wu_changes()`], and [`wu_diff()`] functions to calculate or
 //! process diffs between `a` and `b` slices via LCS (Longest Common Subsequence) or Wu diff
 //! algorithms into a [`Vec<Change>`], and the [`patch()`] function to reproduce `b` from the `a`
-//! slice and [`Vec<Change>`].
+//! slice and [`Vec<Change>`], and the [`insert()`] and [`remove()`] functions to enable writing a
+//! custom `changes` function.
 //!
 //! ```
 //! use slice_diff_patch::*;
@@ -289,7 +290,7 @@ use std::fmt::Debug;
 /// Process an insert.
 ///
 /// * Upgrade `Change::Remove(n), Change::Insert((n, item))` to `Change::Update((n, item))`.
-fn insert<T: PartialEq + Clone + Debug>(n: usize, item: &T, changes: &mut Vec<Change<T>>) {
+pub fn insert<T: PartialEq + Clone + Debug>(n: usize, item: &T, changes: &mut Vec<Change<T>>) {
     if let Some(prev_change) = changes.pop() {
         if let Change::Remove(prev_n) = prev_change {
             if n == prev_n {
@@ -305,7 +306,7 @@ fn insert<T: PartialEq + Clone + Debug>(n: usize, item: &T, changes: &mut Vec<Ch
 /// Process a remove.
 ///
 /// * Upgrade `Change::Insert((n, item)), Change::Remove(n+1)` to `Change::Update((n, item))`.
-fn remove<T: PartialEq + Clone + Debug>(n: usize, changes: &mut Vec<Change<T>>) {
+pub fn remove<T: PartialEq + Clone + Debug>(n: usize, changes: &mut Vec<Change<T>>) {
     if let Some(prev_change) = changes.pop() {
         if let Change::Insert((prev_n, ref item)) = prev_change {
             if n == prev_n + 1 {
