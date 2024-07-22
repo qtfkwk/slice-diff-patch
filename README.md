@@ -73,6 +73,7 @@ Changelog:
 * 1.1.0: add doc test example
 * 1.1.1: fix readme
 * 1.2.1: expose [`remove()`] and [`insert()`] functions
+* 1.2.2: update dependencies; rustfmt
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`diff_changes()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.lcs_changes.html
