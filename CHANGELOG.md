@@ -8,10 +8,12 @@
 * 1.0.0 (2022-02-07): Add `Update` variant on [`Change`]
     * 1.1.0 (2022-02-08): Add doc test example
         * 1.1.1 (2022-02-08): Fix readme
-    * 1.2.1 (2022-02-08): Expose [`remove()`] and [`insert()`] functions
-    * 1.2.2 (2024-07-22): Update dependencies; rustfmt
-    * 1.2.3 (2024-08-06): Add `Makefile.md`, `Cargo.lock`; fix changelog
-    * 1.2.4 (2025-05-10): Fix doc; add `commit` target to makefile
+    * 1.2.*
+        * 1.2.1 (2022-02-08): Expose [`remove()`] and [`insert()`] functions
+        * 1.2.2 (2024-07-22): Update dependencies; rustfmt
+        * 1.2.3 (2024-08-06): Add `Makefile.md`, `Cargo.lock`; fix changelog
+        * 1.2.4 (2025-05-10): Fix doc; add `commit` target to makefile
+    * 1.3.0 (2025-09-02): Update dependencies; 2024 edition; fix changelog, readme, doc
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`insert()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.insert.html

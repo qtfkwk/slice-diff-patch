@@ -16,7 +16,7 @@ checksum = "c172ea7099cef89eb5a1a6e1f55d79a753823a0201d362f6ec5508028efcf4ed"
 
 [[package]]
 name = "slice-diff-patch"
-version = "1.2.4"
+version = "1.3.0"
 dependencies = [
  "diff",
  "lcs-diff",

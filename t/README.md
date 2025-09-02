@@ -1,10 +1,14 @@
-This crate provides the [`Change`] enum as an abstraction for [`diff::Result`],
-[`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`]; the [`diff_changes()`], [`diff_diff()`],
-[`lcs_changes()`], [`lcs_diff()`], [`wu_changes()`], and [`wu_diff()`] functions to calculate or
-process diffs between `a` and `b` slices via LCS (Longest Common Subsequence) or Wu diff algorithms
-into a [`Vec<Change>`], the [`patch()`] function to reproduce `b` from the `a` slice and
-[`Vec<Change>`], and the [`insert()`] and [`remove()`] functions to enable writing a custom
-`changes` function.
+# Features
+
+* [`Change`] enum as an abstraction for [`diff::Result`], [`lcs_diff::DiffResult`], and
+  [`wu_diff::DiffResult`];
+* [`diff_changes()`], [`diff_diff()`], [`lcs_changes()`], [`lcs_diff()`], [`wu_changes()`], and
+  [`wu_diff()`] functions to calculate or process diffs between `a` and `b` slices via LCS (Longest
+  Common Subsequence) or Wu diff algorithms into a [`Vec<Change>`]
+* [`patch()`] function to reproduce `b` from the `a` slice and [`Vec<Change>`]
+* [`insert()`] and [`remove()`] functions to enable writing a custom `changes` function
+
+# Example
 
 ```Rust
 use slice_diff_patch::*;
@@ -46,7 +50,7 @@ assert_eq!(
 assert_eq!(patch(&a, &wu), b);
 ```
 
-See also:
+# References
 
 * Hunt, James W; Szymanski, Thomas G. (1977). "A fast algorithm for computing longest common
   subsequences" <http://www.cs.ust.hk/mjg_lib/bibs/DPSu/DPSu.Files/HuSz77.pdf>

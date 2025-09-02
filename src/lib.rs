@@ -251,45 +251,51 @@ mod tests {
 
 use std::fmt::Debug;
 
-/// Process an insert.
-///
-/// * Upgrade `Change::Remove(n), Change::Insert((n, item))` to `Change::Update((n, item))`.
+/**
+Process an insert.
+
+- Upgrade `Change::Remove(n), Change::Insert((n, item))` to `Change::Update((n, item))`.
+*/
 pub fn insert<T: PartialEq + Clone + Debug>(n: usize, item: &T, changes: &mut Vec<Change<T>>) {
     if let Some(prev_change) = changes.pop() {
-        if let Change::Remove(prev_n) = prev_change {
-            if n == prev_n {
-                changes.push(Change::Update((n, (*item).clone())));
-                return;
-            }
+        if let Change::Remove(prev_n) = prev_change
+            && n == prev_n
+        {
+            changes.push(Change::Update((n, (*item).clone())));
+            return;
         }
         changes.push(prev_change);
     }
     changes.push(Change::Insert((n, (*item).clone())));
 }
 
-/// Process a remove.
-///
-/// * Upgrade `Change::Insert((n, item)), Change::Remove(n+1)` to `Change::Update((n, item))`.
+/*
+Process a remove.
+
+- Upgrade `Change::Insert((n, item)), Change::Remove(n+1)` to `Change::Update((n, item))`.
+*/
 pub fn remove<T: PartialEq + Clone + Debug>(n: usize, changes: &mut Vec<Change<T>>) {
     if let Some(prev_change) = changes.pop() {
-        if let Change::Insert((prev_n, ref item)) = prev_change {
-            if n == prev_n + 1 {
-                changes.push(Change::Update((prev_n, item.clone())));
-                return;
-            }
+        if let Change::Insert((prev_n, ref item)) = prev_change
+            && n == prev_n + 1
+        {
+            changes.push(Change::Update((prev_n, item.clone())));
+            return;
         }
         changes.push(prev_change);
     }
     changes.push(Change::Remove(n));
 }
 
-/// Abstraction for [`diff::Result`], [`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`] that
-/// excludes a variant for common sequence, stores a clone of inserted items, and indices relate
-/// iteratively to `a`.
-///
-/// [`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
-/// [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
-/// [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
+/**
+Abstraction for [`diff::Result`], [`lcs_diff::DiffResult`], and [`wu_diff::DiffResult`] that
+excludes a variant for common sequence, stores a clone of inserted items, and indices relate
+iteratively to `a`.
+
+[`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
+[`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+[`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
+*/
 #[derive(Debug, Clone, PartialEq)]
 pub enum Change<T: PartialEq + Clone + Debug> {
     Remove(usize),
@@ -297,12 +303,14 @@ pub enum Change<T: PartialEq + Clone + Debug> {
     Update((usize, T)),
 }
 
-/// Convert a slice of [`diff::Result`] into a [`Vec<Change>`].
-///
-/// Note that unlike [`wu_changes`], `b` is not needed to clone inserted items because they are
-/// included in the [`diff::Result`].
-///
-/// [`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
+/**
+Convert a slice of [`diff::Result`] into a [`Vec<Change>`].
+
+Note that unlike [`wu_changes`], `b` is not needed to clone inserted items because they are included
+in the [`diff::Result`].
+
+[`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
+*/
 pub fn diff_changes<T: PartialEq + Clone + Debug>(d: &[diff::Result<&T>]) -> Vec<Change<T>> {
     let mut changes = vec![];
     let mut removed = 0;
@@ -322,19 +330,23 @@ pub fn diff_changes<T: PartialEq + Clone + Debug>(d: &[diff::Result<&T>]) -> Vec
     changes
 }
 
-/// Calculate the diff between `a` and `b` via [`diff::slice`] and convert to a [`Vec<Change>`].
-///
-/// [`diff::slice`]: https://docs.rs/diff/latest/diff/fn.diff.html
+/**
+Calculate the diff between `a` and `b` via [`diff::slice`] and convert to a [`Vec<Change>`].
+
+[`diff::slice`]: https://docs.rs/diff/latest/diff/fn.diff.html
+*/
 pub fn diff_diff<T: PartialEq + Clone + Debug>(a: &[T], b: &[T]) -> Vec<Change<T>> {
     diff_changes(&diff::slice(a, b))
 }
 
-/// Convert a slice of [`lcs_diff::DiffResult`] into a [`Vec<Change>`].
-///
-/// Note that unlike [`wu_changes`], `b` is not needed to clone inserted items because they are
-/// included in the [`lcs_diff::DiffResult`].
-///
-/// [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+/**
+Convert a slice of [`lcs_diff::DiffResult`] into a [`Vec<Change>`].
+
+Note that unlike [`wu_changes`], `b` is not needed to clone inserted items because they are included
+in the [`lcs_diff::DiffResult`].
+
+[`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+*/
 pub fn lcs_changes<T: PartialEq + Clone + Debug>(d: &[lcs_diff::DiffResult<T>]) -> Vec<Change<T>> {
     let mut changes = vec![];
     let mut removed = 0;
@@ -357,19 +369,23 @@ pub fn lcs_changes<T: PartialEq + Clone + Debug>(d: &[lcs_diff::DiffResult<T>]) 
     changes
 }
 
-/// Calculate the diff between `a` and `b` via [`lcs_diff::diff`] and convert to a [`Vec<Change>`].
-///
-/// [`lcs_diff::diff`]: https://docs.rs/lcs-diff/latest/lcs_diff/fn.diff.html
+/**
+Calculate the diff between `a` and `b` via [`lcs_diff::diff`] and convert to a [`Vec<Change>`].
+
+[`lcs_diff::diff`]: https://docs.rs/lcs-diff/latest/lcs_diff/fn.diff.html
+*/
 pub fn lcs_diff<T: PartialEq + Clone + Debug>(a: &[T], b: &[T]) -> Vec<Change<T>> {
     lcs_changes(lcs_diff::diff(a, b).as_slice())
 }
 
-/// Convert a slice of [`wu_diff::DiffResult`] into a [`Vec<Change>`].
-///
-/// Note that unlike [`lcs_changes()`], `b` is needed to clone inserted items because they are not
-/// included in the [`wu_diff::DiffResult`].
-///
-/// [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
+/**
+Convert a slice of [`wu_diff::DiffResult`] into a [`Vec<Change>`].
+
+Note that unlike [`lcs_changes()`], `b` is needed to clone inserted items because they are not
+included in the [`wu_diff::DiffResult`].
+
+[`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
+*/
 pub fn wu_changes<T: PartialEq + Clone + Debug>(
     d: &[wu_diff::DiffResult],
     b: &[T],
@@ -395,9 +411,11 @@ pub fn wu_changes<T: PartialEq + Clone + Debug>(
     changes
 }
 
-/// Calculate the diff between `a` and `b` via [`wu_diff::diff`] and convert to a [`Vec<Change>`].
-///
-/// [`wu_diff::diff`]: https://docs.rs/wu-diff/latest/wu_diff/fn.diff.html
+/**
+Calculate the diff between `a` and `b` via [`wu_diff::diff`] and convert to a [`Vec<Change>`].
+
+[`wu_diff::diff`]: https://docs.rs/wu-diff/latest/wu_diff/fn.diff.html
+*/
 pub fn wu_diff<T: PartialEq + Clone + Debug>(a: &[T], b: &[T]) -> Vec<Change<T>> {
     wu_changes(&wu_diff::diff(a, b), b)
 }
