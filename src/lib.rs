@@ -311,6 +311,7 @@ in the [`diff::Result`].
 
 [`diff::Result`]: https://docs.rs/diff/latest/diff/enum.Result.html
 */
+#[must_use]
 pub fn diff_changes<T: PartialEq + Clone + Debug>(d: &[diff::Result<&T>]) -> Vec<Change<T>> {
     let mut changes = vec![];
     let mut removed = 0;
@@ -324,7 +325,7 @@ pub fn diff_changes<T: PartialEq + Clone + Debug>(d: &[diff::Result<&T>]) -> Vec
             diff::Result::Right(r) => {
                 insert(n, *r, &mut changes);
             }
-            _ => {}
+            diff::Result::Both(..) => {}
         }
     }
     changes
@@ -346,6 +347,10 @@ Note that unlike [`wu_changes`], `b` is not needed to clone inserted items becau
 in the [`lcs_diff::DiffResult`].
 
 [`lcs_diff::DiffResult`]: https://docs.rs/lcs-diff/latest/lcs_diff/enum.DiffResult.html
+
+# Panics
+
+Panics if not able to resolve the old index of a removed item or the new index of an added item
 */
 pub fn lcs_changes<T: PartialEq + Clone + Debug>(d: &[lcs_diff::DiffResult<T>]) -> Vec<Change<T>> {
     let mut changes = vec![];
@@ -363,7 +368,7 @@ pub fn lcs_changes<T: PartialEq + Clone + Debug>(d: &[lcs_diff::DiffResult<T>]) 
                 insert(n, &r.data, &mut changes);
                 added += 1;
             }
-            _ => {}
+            lcs_diff::DiffResult::Common(_) => {}
         }
     }
     changes
@@ -385,6 +390,10 @@ Note that unlike [`lcs_changes()`], `b` is needed to clone inserted items becaus
 included in the [`wu_diff::DiffResult`].
 
 [`wu_diff::DiffResult`]: https://docs.rs/wu-diff/latest/wu_diff/enum.DiffResult.html
+
+# Panics
+
+Panics if not able to resolve the old index of a removed item or the new index of an added item
 */
 pub fn wu_changes<T: PartialEq + Clone + Debug>(
     d: &[wu_diff::DiffResult],
@@ -405,7 +414,7 @@ pub fn wu_changes<T: PartialEq + Clone + Debug>(
                 insert(n, &b[n], &mut changes);
                 added += 1;
             }
-            _ => {}
+            wu_diff::DiffResult::Common(_) => {}
         }
     }
     changes

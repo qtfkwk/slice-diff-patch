@@ -14,6 +14,7 @@
         * 1.2.3 (2024-08-06): Add `Makefile.md`, `Cargo.lock`; fix changelog
         * 1.2.4 (2025-05-10): Fix doc; add `commit` target to makefile
     * 1.3.0 (2025-09-02): Update dependencies; 2024 edition; fix changelog, readme, doc
+        * 1.3.1 (2025-11-13): clippy fixes
 
 [`Change`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/enum.Change.html
 [`insert()`]: https://docs.rs/slice-diff-patch/latest/slice_diff_patch/fn.insert.html
